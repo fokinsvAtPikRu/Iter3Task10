@@ -16,10 +16,18 @@ namespace Iter3Task10.Services
             _document = document;
         }
 
-        public List<string> GetCategoryNames() =>
-        _document.Settings.Categories
-            .OfType<Category>()
-            .Select(c => c.Name)
-            .ToList();
+        public List<string> GetCategoryNames()
+        {
+            var familySymbols = new FilteredElementCollector(_document)
+                .OfClass(typeof(FamilySymbol))
+                .Cast<FamilySymbol>()
+                .Where(fs => fs.Category != null)                
+                .ToList();
+            return familySymbols
+                .Select(fs => fs.Category.Name)
+                .Distinct()
+                .OrderBy(name=>name)
+                .ToList();
+        }
     }
 }

@@ -16,12 +16,12 @@ namespace Iter3Task10.Services
         {
             _document = document;
         }
-        public Result Place(FamilySymbol familySymbol, Level level, int count) =>        
+        public Result Place(FamilySymbol familySymbol, Level level, int count) =>
             ValidateCount(count)
                 .Bind(() => ValidateFamilySymbol(familySymbol))
                 .Bind(() => ValidateLevel(level))
                 .Bind(() => PlaceInstance(familySymbol, level, count));
-        
+
         private Result ValidateCount(int count) =>
             count < 1 ? Result.Failure("Количество размещаемых элементов меньше 1") : Result.Success();
         private Result ValidateFamilySymbol(FamilySymbol fs) =>
@@ -31,11 +31,12 @@ namespace Iter3Task10.Services
 
         private Result PlaceInstance(FamilySymbol familySymbol, Level level, int count)
         {
-            int squareLength = (int)Truncate(Sqrt(count)) + 1;
+            int squareLength =
+            Sqrt(count) - (int)Truncate(Sqrt(count)) == 0 ? (int)Truncate(Sqrt(count)) : (int)Truncate(Sqrt(count)) + 1;
             List<XYZ> points = new List<XYZ>();
             for (int i = 0; i < squareLength; i++)
             {
-                for (int j = 0; j < count; j++)
+                for (int j = 0; j < squareLength && i * squareLength + j < count; j++)
                 {
                     points.Add(new XYZ(i * Step, j * Step, 0));
                 }
@@ -45,7 +46,7 @@ namespace Iter3Task10.Services
                 using (Transaction transaction = new Transaction(_document, "Размещение элементов"))
                 {
                     transaction.Start();
-                    if (!familySymbol.IsActive) 
+                    if (!familySymbol.IsActive)
                         familySymbol.Activate();
                     foreach (XYZ point in points)
                     {

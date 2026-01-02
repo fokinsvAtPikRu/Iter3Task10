@@ -50,7 +50,7 @@
              Padding="10"
              IsEditable="True"
              ItemsSource="{Binding FamilySymbols}"
-             SelectedIndex="{Binding SelectedFamilySymbol, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+             SelectedValue="{Binding SelectedFamilySymbol, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             DisplayMemberPath="Name"/>
         <!--Количество-->
         <Label
@@ -76,7 +76,8 @@
             Padding="10"
             IsEditable="True"
             ItemsSource="{Binding Levels}"
-            SelectedIndex="{Binding SelectedLevel}"/>
+            SelectedValue="{Binding SelectedLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            DisplayMemberPath="Name"/>
         <!-- Status Message-->
         <TextBlock
             Grid.Row="4" Grid.ColumnSpan="2"

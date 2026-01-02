@@ -18,16 +18,11 @@ namespace Iter3Task10.Services
             _document = document;
         }
 
-        public List<FamilySymbol> GetFamilySymbols(string categoryName)
-        {
-            var list= new FilteredElementCollector(_document)
-            .OfClass(typeof(FamilySymbol))
-            .Cast<FamilySymbol>()
-            .Where(fs => fs.Category != null && fs.Category.Name == categoryName)
-            //.Where(fs=>fs.Location is LocationPoint)
-            .ToList();
-            TaskDialog.Show("test", $"{list.Count} family symbols");
-            return list;
-        }
+        public List<FamilySymbol> GetFamilySymbols(string categoryName) =>
+             new FilteredElementCollector(_document)
+                .OfClass(typeof(FamilySymbol))
+                .Cast<FamilySymbol>()
+                .Where(fs => fs.Category != null && fs.Category.Name == categoryName)                
+                .ToList();
     }
 }
