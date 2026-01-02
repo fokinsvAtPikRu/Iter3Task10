@@ -1,0 +1,94 @@
+﻿<Window x:Class="Iter3Task10.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Iter3Task10.Views"
+        xmlns:viewModel="clr-namespace:Iter3Task10.ViewModels"        
+        Title="Размещение" Height="400" Width="300"        
+        MinWidth="350" MinHeight="250"
+        WindowStartupLocation="CenterScreen"
+        d:DataContext="{d:DesignData viewModel:MainWindowViewModel}"
+        mc:Ignorable="d">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <!--Выбор категории-->
+        <Label
+            Grid.Row="0" Grid.Column="0"
+            Padding="0,0,0,15"
+            HorizontalAlignment="Center"
+            Content="Категория"
+            FontSize="20"/>
+        <ComboBox
+            Grid.Row="0" Grid.Column="1"
+            Padding="10"
+            IsEditable="False"
+            ItemsSource="{Binding CategoryNames}"
+            SelectedValue="{Binding CategoryNameSelected,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            />
+        <!--Выбор семейства-->
+        <Label
+             Grid.Row="1" Grid.Column="0"
+             Padding="0,0,0,15"
+             HorizontalAlignment="Center"
+             Content="Семейство"
+             FontSize="20"/>
+        <ComboBox
+             Grid.Row="1" Grid.Column="1"
+             Padding="10"
+             IsEditable="True"
+             ItemsSource="{Binding FamilySymbols}"
+             SelectedIndex="{Binding SelectedFamilySymbol, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            DisplayMemberPath="Name"/>
+        <!--Количество-->
+        <Label
+            Grid.Row="2" Grid.Column="0"
+            Padding="10"
+            HorizontalAlignment="Center"
+            Content="Количество"
+            FontSize="20"/>
+        <TextBox
+            Grid.Row="2" Grid.Column="1"
+            Padding="10"
+            Text="{Binding Count, UpdateSourceTrigger=PropertyChanged}"
+            />
+        <!--Уровень-->
+        <Label
+            Grid.Row="3" Grid.Column="0"
+            Padding="10"
+            HorizontalAlignment="Center"
+            Content="Уровень"
+            FontSize="20"/>
+        <ComboBox
+            Grid.Row="3" Grid.Column="1"
+            Padding="10"
+            IsEditable="True"
+            ItemsSource="{Binding Levels}"
+            SelectedIndex="{Binding SelectedLevel}"/>
+        <!-- Status Message-->
+        <TextBlock
+            Grid.Row="4" Grid.ColumnSpan="2"
+            Margin="0,0,0,15"
+            FontStyle="Italic"
+            Foreground="Gray"
+            Text="{Binding StatusMessage}"
+            TextWrapping="Wrap"/>
+        <Button
+            Grid.Row="6" Grid.ColumnSpan="2"
+            Command="{Binding PlaceItemCommand}"
+            Content="Разместить"/>
+    </Grid>
+    
+</Window>
