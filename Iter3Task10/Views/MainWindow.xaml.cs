@@ -1,4 +1,5 @@
-﻿using Iter3Task10.ViewModels;
+﻿using Iter3Task10.Abstraction;
+using Iter3Task10.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace Iter3Task10.Views
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
+    {        
         public MainWindow(MainWindowViewModel viewModel)
         {
             DataContext = viewModel;

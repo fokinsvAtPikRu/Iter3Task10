@@ -9,36 +9,48 @@ namespace Iter3Task10.Services
 {
     public class PlaceService : IPlaceService
     {
-        const int Step = 10;
-        private Document _document;
 
-        public PlaceService(Document document)
+        private Document _document;
+        private IGetStartPointService _getStartPointService;
+
+        public PlaceService(Document document, IGetStartPointService getStartPointService)
         {
             _document = document;
+            _getStartPointService = getStartPointService;
         }
-        public Result Place(FamilySymbol familySymbol, Level level, int count) =>
-            ValidateCount(count)
+        public Result Place(string categoryNameSelected, FamilySymbol familySymbol, Level level, int step, int count) =>
+                ValidateCategoryName(categoryNameSelected)
                 .Bind(() => ValidateFamilySymbol(familySymbol))
+                .Bind(() => ValidateCount(count))
                 .Bind(() => ValidateLevel(level))
-                .Bind(() => PlaceInstance(familySymbol, level, count));
+                .Bind(()=> ValidateStep(step))
+                .Bind(() => _getStartPointService.GetStartPoint())
+                .Bind((xyz) => PlaceInstance(familySymbol, xyz, level, step, count));
 
+        private Result ValidateCategoryName(string categoryNameSelected) =>
+            String.IsNullOrEmpty(categoryNameSelected) ? Result.Failure("Не выбрана категория") : Result.Success();
         private Result ValidateCount(int count) =>
             count < 1 ? Result.Failure("Количество размещаемых элементов меньше 1") : Result.Success();
         private Result ValidateFamilySymbol(FamilySymbol fs) =>
-            fs == null ? Result.Failure("FamilySymbol == null") : Result.Success();
+            fs == null ? Result.Failure("Не выбрано семейство") : Result.Success();
         private Result ValidateLevel(Level level) =>
-            level == null ? Result.Failure("Level == null") : Result.Success();
-
-        private Result PlaceInstance(FamilySymbol familySymbol, Level level, int count)
+            level == null ? Result.Failure("Не выбран уровень") : Result.Success();
+        private Result ValidateStep(int step) =>
+            step > 0 ? Result.Success() : Result.Failure("Некорректный шаг");
+        private Result PlaceInstance(FamilySymbol familySymbol, XYZ startPoint, Level level, int step, int count)
         {
             int squareLength =
             Sqrt(count) - (int)Truncate(Sqrt(count)) == 0 ? (int)Truncate(Sqrt(count)) : (int)Truncate(Sqrt(count)) + 1;
+            double stepFeet = UnitUtils.ConvertToInternalUnits(step, DisplayUnitType.DUT_MILLIMETERS);
             List<XYZ> points = new List<XYZ>();
             for (int i = 0; i < squareLength; i++)
             {
                 for (int j = 0; j < squareLength && i * squareLength + j < count; j++)
                 {
-                    points.Add(new XYZ(i * Step, j * Step, 0));
+                    points.Add(new XYZ
+                        (startPoint.X + i * stepFeet,
+                        startPoint.Y + j * stepFeet,
+                        0));
                 }
             }
             try

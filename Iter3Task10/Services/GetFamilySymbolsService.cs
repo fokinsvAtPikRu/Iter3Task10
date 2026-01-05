@@ -1,11 +1,7 @@
 ﻿using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using Iter3Task10.Abstraction;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Iter3Task10.Services
 {
