@@ -14,6 +14,7 @@ namespace Iter3Task10.ViewModels
         // RevitTask
         private RevitTask _revitTask;
         // Services
+        private readonly ILoggerService _loggerService;
         private readonly IGetCategoryNamesSevice _getCategoryNamesService;
         private readonly IGetFamilySymbolsService _getFamilySymbolsService;
         private readonly IGetLevelsService _getLevelService;
@@ -33,12 +34,14 @@ namespace Iter3Task10.ViewModels
         // Command
         private readonly AsyncRelayCommand _placeItemCommand;
         public MainWindowViewModel(RevitTask revitTask,
+            ILoggerService logger,
             IPlaceService placeService,
             IGetCategoryNamesSevice getCategoryTypesSevice,
             IGetFamilySymbolsService getFamilySymbolsService,
             IGetLevelsService getLevelsService)
         {
             _revitTask = revitTask;
+            _loggerService = logger;
             _placeItemCommand = new AsyncRelayCommand(PlaceItem);
             _placeService = placeService;
             _getCategoryNamesService = getCategoryTypesSevice;
@@ -47,6 +50,9 @@ namespace Iter3Task10.ViewModels
             _categoryNames = _getCategoryNamesService.GetCategoryNames();
             _levels = _getLevelService.GetLevel();            
         }
+        // Property for Logger
+        public ILoggerService LoggerService { get; }
+        
         // Properties for INotifyPropertyChanged
         
         public List<string> CategoryNames
@@ -116,15 +122,18 @@ namespace Iter3Task10.ViewModels
         // Method Execute for RelayCommand
         private async Task PlaceItem()
         {
+            _loggerService.LogRevitOperation($"Create CreateFamilySymbols {SelectedFamilySymbol.Name} on level {SelectedLevel} step {Step} count {Count}");
             CSharpFunctionalExtensions.Result result = await _revitTask.Run<CSharpFunctionalExtensions.Result>(app =>
                   _placeService.Place(CategoryNameSelected, SelectedFamilySymbol, SelectedLevel, Step, Count));
             if (result.IsSuccess)
             {
+                _loggerService.LogInformation("FamilySymbols created");              
                 StatusMessage = $"Размещено {Count} экземпляров";
                 // TaskDialog.Show("Размещение мебели", $"Размещено {Count} экземпляров");
             }
             else
             {
+                _loggerService.LogWarning("Failed to create FamilySymbols");
                 StatusMessage = $"Ошибка {result.Error}";
                 // TaskDialog.Show("Размещение мебели", $"{result.Error}");
             }

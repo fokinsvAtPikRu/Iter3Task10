@@ -13,6 +13,7 @@ namespace Iter3Task10
         public void Configure(IServiceCollection services)
         {
             services.AddSingleton<RevitTask>(new RevitTask());
+            services.AddSingleton<ILoggerService, LoggerService>();
             services.AddSingleton<IGetCategoryNamesSevice, GetCategoryNameService>();
             services.AddSingleton<IGetFamilySymbolsService, GetFamilySymbolsService>();
             services.AddSingleton<IGetStartPointService, GetStartPointService>();

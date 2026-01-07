@@ -9,13 +9,16 @@ namespace Iter3Task10.Services
 {
     public class PlaceService : IPlaceService
     {
-
         private Document _document;
+        private ILoggerService _loggerService;
         private IGetStartPointService _getStartPointService;
 
-        public PlaceService(Document document, IGetStartPointService getStartPointService)
+        public PlaceService(Document document, 
+            ILoggerService loggerService,
+            IGetStartPointService getStartPointService)
         {
             _document = document;
+            _loggerService = loggerService;
             _getStartPointService = getStartPointService;
         }
         public Result Place(string categoryNameSelected, FamilySymbol familySymbol, Level level, int step, int count) =>
@@ -73,6 +76,7 @@ namespace Iter3Task10.Services
             }
             catch (Exception ex)
             {
+                _loggerService.LogError(ex, "Error executing PlaceService");
                 return Result.Failure(ex.Message);
             }
             return Result.Success();
