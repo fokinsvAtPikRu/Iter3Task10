@@ -10,6 +10,7 @@
     <PackageReference Include="CSharpFunctionalExtensions" Version="3.6.0" />
     <PackageReference Include="RevitTask" Version="3.0.0" />
     <PackageReference Include="RxBim.Command.Revit.2019" Version="3.0.4" />
+    <PackageReference Include="RxBim.Logs.Revit" Version="2019.1.9" />
   </ItemGroup>
 
   <ItemGroup>

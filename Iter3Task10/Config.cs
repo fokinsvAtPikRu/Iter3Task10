@@ -4,7 +4,8 @@ using Iter3Task10.ViewModels;
 using Iter3Task10.Views;
 using Microsoft.Extensions.DependencyInjection;
 using RxBim.Di;
-using System.Windows;
+using RxBim.Logs.Revit;
+using System.Reflection;
 
 namespace Iter3Task10
 {
@@ -12,6 +13,10 @@ namespace Iter3Task10
     {
         public void Configure(IServiceCollection services)
         {
+            services.AddRevitLogs
+                (pluginAssembly: Assembly.GetExecutingAssembly(), 
+                cfg: null, 
+                useDefaultEnrichers: true);
             services.AddSingleton<RevitTask>(new RevitTask());
             services.AddSingleton<IGetCategoryNamesSevice, GetCategoryNameService>();
             services.AddSingleton<IGetFamilySymbolsService, GetFamilySymbolsService>();
@@ -20,6 +25,7 @@ namespace Iter3Task10
             services.AddSingleton<IPlaceService, PlaceService>();
             services.AddSingleton<IWindowService, WindowService>();
             services.AddSingleton<MainWindowViewModel>();
+
 
             services.AddSingleton<MainWindow>(provider =>
             {
