@@ -14,7 +14,9 @@ namespace Iter3Task10
         public PluginResult ExecuteCommand(IServiceProvider provider)
         {
             var mainWindow = provider.GetRequiredService<MainWindow>();           
-            mainWindow.Show();
+            mainWindow.Show();            
+            mainWindow.Closed += (s, e) =>
+            mainWindow.Logger.Information("Pluggin stopped");
             return PluginResult.Succeeded;
         }
     }

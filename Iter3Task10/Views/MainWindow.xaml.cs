@@ -1,18 +1,6 @@
-﻿using Iter3Task10.Abstraction;
-using Iter3Task10.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Iter3Task10.ViewModels;
+using Serilog;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Iter3Task10.Views
 {
@@ -20,11 +8,14 @@ namespace Iter3Task10.Views
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {        
+    {
+        private ILogger _logger;
         public MainWindow(MainWindowViewModel viewModel)
         {
             DataContext = viewModel;
+            _logger=viewModel.Logger;
             InitializeComponent();
         }
+        public ILogger Logger { get => _logger; }
     }
 }

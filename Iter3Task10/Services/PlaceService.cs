@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using CSharpFunctionalExtensions;
 using Iter3Task10.Abstraction;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using static System.Math;
@@ -9,13 +10,14 @@ namespace Iter3Task10.Services
 {
     public class PlaceService : IPlaceService
     {
-
+        private ILogger _logger;
         private Document _document;
         private IGetStartPointService _getStartPointService;
 
-        public PlaceService(Document document, IGetStartPointService getStartPointService)
+        public PlaceService(Document document, ILogger logger, IGetStartPointService getStartPointService)
         {
             _document = document;
+            _logger = logger;
             _getStartPointService = getStartPointService;
         }
         public Result Place(string categoryNameSelected, FamilySymbol familySymbol, Level level, int step, int count) =>
@@ -73,6 +75,7 @@ namespace Iter3Task10.Services
             }
             catch (Exception ex)
             {
+                _logger.Error(ex, "Error executing PlaceService");
                 return Result.Failure(ex.Message);
             }
             return Result.Success();

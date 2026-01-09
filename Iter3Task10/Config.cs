@@ -5,6 +5,7 @@ using Iter3Task10.Views;
 using Microsoft.Extensions.DependencyInjection;
 using RxBim.Di;
 using RxBim.Logs.Revit;
+using Serilog;
 using System.Reflection;
 
 namespace Iter3Task10
@@ -13,10 +14,10 @@ namespace Iter3Task10
     {
         public void Configure(IServiceCollection services)
         {
-            services.AddRevitLogs
-                (pluginAssembly: Assembly.GetExecutingAssembly(), 
-                cfg: null, 
-                useDefaultEnrichers: true);
+            
+            services.AddRevitLogs(
+                pluginAssembly: Assembly.GetExecutingAssembly());
+                
             services.AddSingleton<RevitTask>(new RevitTask());
             services.AddSingleton<IGetCategoryNamesSevice, GetCategoryNameService>();
             services.AddSingleton<IGetFamilySymbolsService, GetFamilySymbolsService>();

@@ -3,6 +3,7 @@ using Autodesk.Revit.UI;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Iter3Task10.Abstraction;
+using Serilog;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,12 +14,14 @@ namespace Iter3Task10.ViewModels
     {
         // RevitTask
         private RevitTask _revitTask;
+        // RxBim Logger
+        private ILogger _logger;
         // Services
         private readonly IGetCategoryNamesSevice _getCategoryNamesService;
         private readonly IGetFamilySymbolsService _getFamilySymbolsService;
         private readonly IGetLevelsService _getLevelService;
         private readonly IPlaceService _placeService;
-        
+
         // INotifyPropertychanged
         private List<string> _categoryNames;
         private string _categoryNameSelected;
@@ -32,23 +35,27 @@ namespace Iter3Task10.ViewModels
 
         // Command
         private readonly AsyncRelayCommand _placeItemCommand;
+        // Logger
+        public ILogger Logger { get => _logger; }
         public MainWindowViewModel(RevitTask revitTask,
+            ILogger logger,
             IPlaceService placeService,
             IGetCategoryNamesSevice getCategoryTypesSevice,
             IGetFamilySymbolsService getFamilySymbolsService,
             IGetLevelsService getLevelsService)
         {
             _revitTask = revitTask;
+            _logger = logger;
             _placeItemCommand = new AsyncRelayCommand(PlaceItem);
             _placeService = placeService;
             _getCategoryNamesService = getCategoryTypesSevice;
             _getFamilySymbolsService = getFamilySymbolsService;
             _getLevelService = getLevelsService;
             _categoryNames = _getCategoryNamesService.GetCategoryNames();
-            _levels = _getLevelService.GetLevel();            
+            _levels = _getLevelService.GetLevel();
         }
         // Properties for INotifyPropertyChanged
-        
+
         public List<string> CategoryNames
         {
             get => _categoryNames;
@@ -116,17 +123,19 @@ namespace Iter3Task10.ViewModels
         // Method Execute for RelayCommand
         private async Task PlaceItem()
         {
+            _logger.Information($"Create CreateFamilySymbols {SelectedFamilySymbol.Name} on level {SelectedLevel} step {Step} count {Count}");
+
             CSharpFunctionalExtensions.Result result = await _revitTask.Run<CSharpFunctionalExtensions.Result>(app =>
                   _placeService.Place(CategoryNameSelected, SelectedFamilySymbol, SelectedLevel, Step, Count));
             if (result.IsSuccess)
             {
+                _logger.Information("FamilySymbols created");
                 StatusMessage = $"Размещено {Count} экземпляров";
-                // TaskDialog.Show("Размещение мебели", $"Размещено {Count} экземпляров");
             }
             else
             {
+                _logger.Warning("Failed to create FamilySymbols");
                 StatusMessage = $"Ошибка {result.Error}";
-                // TaskDialog.Show("Размещение мебели", $"{result.Error}");
             }
         }
     }
